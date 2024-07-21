@@ -1,12 +1,17 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
+import type { Metadata } from 'next';
+import { Plus_Jakarta_Sans } from 'next/font/google';
+import './globals.css';
+import { cn } from '@/lib/utils';
 
-const inter = Inter({ subsets: ["latin"] });
+const fontSans = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600'],
+  variable: '--font-sans',
+});
 
 export const metadata: Metadata = {
-  title: "HealthFlow",
-  description: "A healthcare management system",
+  title: 'HealthFlow',
+  description: 'A healthcare management system',
 };
 
 export default function RootLayout({
@@ -15,8 +20,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
+    <html lang='en'>
+      <body
+        className={cn(
+          'min-h-screen bg-dark-300 font-sans antialiased',
+          fontSans.variable
+        )}
+      >
+        {children}
+      </body>
     </html>
   );
 }
