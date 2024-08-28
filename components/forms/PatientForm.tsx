@@ -3,9 +3,10 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import CustomFormField from './CustomFormField';
+import SubmitButton from '@/components/SubmitButton';
+import { useState } from 'react';
 
 export enum FormFieldType {
   INPUT = 'input',
@@ -24,6 +25,8 @@ const formSchema = z.object({
 });
 
 export const PatientForm = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -60,7 +63,6 @@ export const PatientForm = () => {
           iconSrc='assets/icons/email.svg'
           iconAlt='email icon'
         />
-
         <CustomFormField
           fieldType={FormFieldType.PHONE_INPUT}
           control={form.control}
@@ -68,7 +70,7 @@ export const PatientForm = () => {
           label='Phone number'
           placeholder='(555) 123-4567'
         />
-        <Button type='submit'>Submit</Button>
+        <SubmitButton isLoading={isLoading}>Get Started</SubmitButton>
       </form>
     </Form>
   );
