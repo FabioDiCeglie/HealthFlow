@@ -27,6 +27,28 @@ interface CustomProps {
   renderSkeleton?: (field: any) => React.ReactNode;
 }
 
+const CustomFormField = (props: CustomProps) => {
+  const { control, fieldType, name, label, placeholder, iconSrc, iconAlt } =
+    props;
+  return (
+    <FormField
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <FormItem className='flex-1'>
+          {fieldType !== FormFieldType.CHECKBOX && label && (
+            <FormLabel>{label}</FormLabel>
+          )}
+
+          <RenderField field={field} props={props} />
+
+          <FormMessage className='shad-error' />
+        </FormItem>
+      )}
+    />
+  );
+};
+
 const RenderField = ({ field, props }: { field: any; props: CustomProps }) => {
   const { fieldType, placeholder, iconSrc, iconAlt } = props;
   switch (fieldType) {
@@ -54,28 +76,6 @@ const RenderField = ({ field, props }: { field: any; props: CustomProps }) => {
     case FormFieldType.TEXTAREA:
       break;
   }
-};
-
-const CustomFormField = (props: CustomProps) => {
-  const { control, fieldType, name, label, placeholder, iconSrc, iconAlt } =
-    props;
-  return (
-    <FormField
-      control={control}
-      name={name}
-      render={({ field }) => (
-        <FormItem className='flex-1'>
-          {fieldType !== FormFieldType.CHECKBOX && label && (
-            <FormLabel>{label}</FormLabel>
-          )}
-
-          <RenderField field={field} props={props} />
-
-          <FormMessage className='shad-error' />
-        </FormItem>
-      )}
-    />
-  );
 };
 
 export default CustomFormField;
