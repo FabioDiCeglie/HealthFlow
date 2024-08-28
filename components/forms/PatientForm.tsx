@@ -49,7 +49,24 @@ export const PatientForm = () => {
           label='Full name'
           placeholder='John Doe'
           iconSrc='assets/icons/user.svg'
-          iconAlt='user'
+          iconAlt='user icon'
+        />
+        <CustomFormField
+          fieldType={FormFieldType.INPUT}
+          control={form.control}
+          name='email'
+          label='Email'
+          placeholder='johndow@gmail.com'
+          iconSrc='assets/icons/email.svg'
+          iconAlt='email icon'
+        />
+
+        <CustomFormField
+          fieldType={FormFieldType.PHONE_INPUT}
+          control={form.control}
+          name='phone'
+          label='Phone number'
+          placeholder='(555) 123-4567'
         />
         <Button type='submit'>Submit</Button>
       </form>
