@@ -1,8 +1,8 @@
-import { parseStringify } from "../utils";
+// import { users } from "../appwrite.config";
 
 export const createUser = async ({ email, phone, name }: CreateUserParams) => {
   try {
-    const response = await fetch('/api/createUser', {
+    const response = await fetch('/api/user', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -11,8 +11,9 @@ export const createUser = async ({ email, phone, name }: CreateUserParams) => {
     });
 
     if (response.ok) {
-      const data = await response.json();
-      return parseStringify(data)
+      return await response.json();
+    } else if (response.status === 409){
+      return { message: 'This user already exist!'}
     } else {
       console.error('Failed to create user:', await response.json());
     }
@@ -20,3 +21,12 @@ export const createUser = async ({ email, phone, name }: CreateUserParams) => {
     console.error('An error occurred while creating a new user:', error);
   }
 };
+
+// export const getUser = async (userId: string) => {
+//   try {
+//     const user = await users.get(userId);
+//     return parseStringify(user)
+//   } catch (error) {
+//     console.error('An error occurred while getting user information:', error);
+//   }
+// }
