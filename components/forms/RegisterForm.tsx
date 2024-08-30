@@ -11,10 +11,11 @@ import { z } from 'zod';
 import CustomFormField from './CustomFormField';
 import { FormFieldType } from './PatientForm';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Doctors, GenderOptions } from '@/constants';
+import { Doctors, GenderOptions, IdentificationTypes } from '@/constants';
 import { Label } from '@/components/ui/label';
 import { SelectItem } from '@/components/ui/select';
 import Image from 'next/image';
+import FileUploader from '../FileUploader';
 
 export const RegisterForm = ({ user }: { user: User }) => {
   const router = useRouter();
@@ -244,6 +245,47 @@ export const RegisterForm = ({ user }: { user: User }) => {
             />
           </div>
         </section>
+
+        <section className="space-y-6">
+          <div className="mb-9 space-y-1">
+            <h2 className="sub-header">Identification and Verfication</h2>
+          </div>
+
+          <CustomFormField
+            fieldType={FormFieldType.SELECT}
+            control={form.control}
+            name="identificationType"
+            label="Identification Type"
+            placeholder="Select an identification type"
+          >
+            {IdentificationTypes.map((type, i) => (
+              <SelectItem key={type + i} value={type}>
+                {type}
+              </SelectItem>
+            ))}
+          </CustomFormField>
+
+          <CustomFormField
+            fieldType={FormFieldType.INPUT}
+            control={form.control}
+            name="identificationNumber"
+            label="Identification Number"
+            placeholder="123456789"
+          />
+
+          <CustomFormField
+            fieldType={FormFieldType.SKELETON}
+            control={form.control}
+            name="identificationDocument"
+            label="Scanned Copy of Identification Document"
+            renderSkeleton={(field) => (
+              <FormControl>
+                <FileUploader files={field.value} onChange={field.onChange} />
+              </FormControl>
+            )}
+          />
+        </section>
+
 
         <SubmitButton isLoading={isLoading}>Get Started</SubmitButton>
       </form>
