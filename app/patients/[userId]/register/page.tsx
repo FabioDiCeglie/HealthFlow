@@ -1,3 +1,4 @@
+import RegisterForm from '@/components/forms/RegisterForm';
 import { getUser } from '@/lib/actions/patient.actions';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -16,8 +17,7 @@ const Register = async ({ params: { userId } }: SearchParamProps) => {
             className='mb-12 h-10 w-fit'
           />
 
-          {/* <RegisterForm  user={user} /> */}
-          <h1>{user.name}</h1>
+          <RegisterForm  user={user} />
         </div>
         <div className='text-14-regular mt-20 flex justify-between'>
           <p className='justify-items-end text-dark-600 xl:text-left'>

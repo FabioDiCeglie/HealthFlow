@@ -73,7 +73,7 @@ export const PatientForm = () => {
           name='name'
           label='Full name'
           placeholder='John Doe'
-          iconSrc='assets/icons/user.svg'
+          iconSrc='/assets/icons/user.svg'
           iconAlt='user icon'
         />
         <CustomFormField
@@ -82,7 +82,7 @@ export const PatientForm = () => {
           name='email'
           label='Email'
           placeholder='johndow@gmail.com'
-          iconSrc='assets/icons/email.svg'
+          iconSrc='/assets/icons/email.svg'
           iconAlt='email icon'
         />
         <CustomFormField
