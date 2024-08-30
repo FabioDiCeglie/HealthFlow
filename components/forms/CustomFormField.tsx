@@ -22,7 +22,9 @@ import { Control } from 'react-hook-form';
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
 import { FormFieldType } from './PatientForm';
+import { Label } from '../ui/label';
 
 interface CustomProps {
   control: Control<any>;
@@ -145,17 +147,32 @@ const RenderField = ({ field, props }: { field: any; props: CustomProps }) => {
           </Select>
         </FormControl>
       );
-      case FormFieldType.TEXTAREA:
-        return (
-          <FormControl>
-            <Textarea 
-              placeholder={placeholder}
-              {...field}
-              className='shad-textArea'
-              disabled={props.disabled}
+    case FormFieldType.TEXTAREA:
+      return (
+        <FormControl>
+          <Textarea
+            placeholder={placeholder}
+            {...field}
+            className='shad-textArea'
+            disabled={props.disabled}
+          />
+        </FormControl>
+      );
+    case FormFieldType.CHECKBOX:
+      return (
+        <FormControl>
+          <div className='flex items-center gap-4'>
+            <Checkbox
+              id={props.name}
+              checked={field.value}
+              onCheckedChange={field.onChange}
             />
-          </FormControl>
-        );
+            <Label htmlFor={props.name} className='checkbox-label'>
+              {props.label}
+            </Label>
+          </div>
+        </FormControl>
+      );
   }
 };
 
