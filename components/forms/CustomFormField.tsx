@@ -1,8 +1,5 @@
 'use client';
 
-import 'react-phone-number-input/style.css';
-import 'react-datepicker/dist/react-datepicker.css';
-import { E164Number } from 'libphonenumber-js/core';
 import {
   FormControl,
   FormField,
@@ -11,17 +8,21 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Control, Form } from 'react-hook-form';
-import { FormFieldType } from './PatientForm';
-import Image from 'next/image';
-import PhoneInput from 'react-phone-number-input';
-import DatePicker from 'react-datepicker';
 import {
   Select,
   SelectContent,
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { E164Number } from 'libphonenumber-js/core';
+import Image from 'next/image';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { Control } from 'react-hook-form';
+import PhoneInput from 'react-phone-number-input';
+import 'react-phone-number-input/style.css';
+import { Textarea } from '@/components/ui/textarea';
+import { FormFieldType } from './PatientForm';
 
 interface CustomProps {
   control: Control<any>;
@@ -144,6 +145,17 @@ const RenderField = ({ field, props }: { field: any; props: CustomProps }) => {
           </Select>
         </FormControl>
       );
+      case FormFieldType.TEXTAREA:
+        return (
+          <FormControl>
+            <Textarea 
+              placeholder={placeholder}
+              {...field}
+              className='shad-textArea'
+              disabled={props.disabled}
+            />
+          </FormControl>
+        );
   }
 };
 
