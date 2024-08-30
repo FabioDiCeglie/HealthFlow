@@ -1,19 +1,17 @@
+import { NextResponse } from 'next/server';
 import * as sdk from 'node-appwrite';
 import { ID, Query } from "node-appwrite"
 
-export default async function handler(req: any, res: any) {
-    if (req.method !== 'POST') {
-        return res.status(405).json({ message: 'Method not allowed' });
-    }
-
+export async function POST(req: any) {
     if (!process.env.APPWRITE_ENDPOINT || !process.env.APPWRITE_PROJECT_ID || !process.env.APPWRITE_API_KEY) {
         throw new Error('You need to set appwrite environment variables');
     }
 
-    const { user } = req.body;
+    const body = await req.json(); 
+    const { email, phone, name } = body;
 
-    if (!user.email || !user.phone || !user.name) {
-        return res.status(400).json({ message: 'Missing required fields' });
+    if (!email || !phone || !name) {
+        return NextResponse.json({ message: 'Missing required fields' }, { status: 400 });
     }
 
     const client = new sdk.Client();
@@ -22,27 +20,27 @@ export default async function handler(req: any, res: any) {
         .setEndpoint(process.env.APPWRITE_ENDPOINT)
         .setProject(process.env.APPWRITE_PROJECT_ID)
         .setKey(process.env.APPWRITE_API_KEY);
-        
+
     const users = new sdk.Users(client);
+
     try {
         // Create new user -> https://appwrite.io/docs/references/1.5.x/server-nodejs/users#create
         const newUser = await users.create(
             ID.unique(),
-            user.email,
-            user.phone,
+            email,
+            phone,
             undefined,
-            user.name
+            name
         );
 
-        return res.status(201).json({ newUser });
+        return NextResponse.json(newUser, { status: 200 })
     } catch (error: any) {
         // Check existing user
         if (error && error?.code === 409) {
             const existingUser = await users.list([
-                Query.equal("email", [user.email]),
+                Query.equal("email", [email]),
             ]);
-
-            return existingUser.users[0];
+            return NextResponse.json(existingUser.users[0], { status: 409 });
         }
         console.error("An error occurred while creating a new user:", error);
     }
