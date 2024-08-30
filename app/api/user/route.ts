@@ -1,6 +1,6 @@
+import { users } from '@/lib/appwrite.config';
 import { NextResponse } from 'next/server';
-import * as sdk from 'node-appwrite';
-import { ID, Query } from "node-appwrite"
+import { ID, Query } from "node-appwrite";
 
 export async function POST(req: any) {
     if (!process.env.APPWRITE_ENDPOINT || !process.env.APPWRITE_PROJECT_ID || !process.env.APPWRITE_API_KEY) {
@@ -13,15 +13,6 @@ export async function POST(req: any) {
     if (!email || !phone || !name) {
         return NextResponse.json({ message: 'Missing required fields' }, { status: 400 });
     }
-
-    const client = new sdk.Client();
-
-    client
-        .setEndpoint(process.env.APPWRITE_ENDPOINT)
-        .setProject(process.env.APPWRITE_PROJECT_ID)
-        .setKey(process.env.APPWRITE_API_KEY);
-
-    const users = new sdk.Users(client);
 
     try {
         // Create new user -> https://appwrite.io/docs/references/1.5.x/server-nodejs/users#create

@@ -1,4 +1,5 @@
-// import { users } from "../appwrite.config";
+import { users } from "@/lib/appwrite.config";
+import { parseStringify } from "../utils";
 
 export const createUser = async ({ email, phone, name }: CreateUserParams) => {
   try {
@@ -22,11 +23,11 @@ export const createUser = async ({ email, phone, name }: CreateUserParams) => {
   }
 };
 
-// export const getUser = async (userId: string) => {
-//   try {
-//     const user = await users.get(userId);
-//     return parseStringify(user)
-//   } catch (error) {
-//     console.error('An error occurred while getting user information:', error);
-//   }
-// }
+export const getUser = async (userId: string) => {
+  try {
+    const user = await users.get(userId);
+    return parseStringify(user)
+  } catch (error) {
+    console.error('An error occurred while getting user information:', error);
+  }
+}
