@@ -16,6 +16,12 @@ import { FormFieldType } from './PatientForm';
 import Image from 'next/image';
 import PhoneInput from 'react-phone-number-input';
 import DatePicker from 'react-datepicker';
+import {
+  Select,
+  SelectContent,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 interface CustomProps {
   control: Control<any>;
@@ -61,7 +67,7 @@ const RenderField = ({ field, props }: { field: any; props: CustomProps }) => {
     iconAlt,
     showTimeSelect,
     dateFormat,
-    renderSkeleton
+    renderSkeleton,
   } = props;
   switch (fieldType) {
     case FormFieldType.INPUT:
@@ -122,7 +128,21 @@ const RenderField = ({ field, props }: { field: any; props: CustomProps }) => {
         </div>
       );
     case FormFieldType.SKELETON:
-      return ( renderSkeleton ? renderSkeleton(field) : null
+      return renderSkeleton ? renderSkeleton(field) : null;
+    case FormFieldType.SELECT:
+      return (
+        <FormControl>
+          <Select onValueChange={field.onChange} defaultValue={field.value}>
+            <FormControl className='shad-select-trigger'>
+              <SelectTrigger>
+                <SelectValue placeholder={placeholder} />
+              </SelectTrigger>
+            </FormControl>
+            <SelectContent className='shad-select-content'>
+              {props.children}
+            </SelectContent>
+          </Select>
+        </FormControl>
       );
   }
 };
