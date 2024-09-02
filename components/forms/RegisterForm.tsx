@@ -2,7 +2,7 @@
 
 import SubmitButton from '@/components/SubmitButton';
 import { Form, FormControl } from '@/components/ui/form';
-import { userFormValidation } from '@/lib/validation';
+import { PatientFormValidation } from '@/lib/validation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -21,8 +21,8 @@ export const RegisterForm = ({ user }: { user: User }) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
-  const form = useForm<z.infer<typeof userFormValidation>>({
-    resolver: zodResolver(userFormValidation),
+  const form = useForm<z.infer<typeof PatientFormValidation>>({
+    resolver: zodResolver(PatientFormValidation),
     defaultValues: {
       name: '',
       email: '',
@@ -34,7 +34,7 @@ export const RegisterForm = ({ user }: { user: User }) => {
     name,
     email,
     phone,
-  }: z.infer<typeof userFormValidation>) => {
+  }: z.infer<typeof PatientFormValidation>) => {
     setIsLoading(true);
 
     // try {
