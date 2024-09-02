@@ -2,26 +2,30 @@
 
 import { users } from "@/lib/appwrite.config";
 import { parseStringify } from "../utils";
+import { ID, Query } from "node-appwrite";
 
-export const createUser = async ({ email, phone, name }: CreateUserParams) => {
+export const createUser = async (user: CreateUserParams) => {
   try {
-    const response = await fetch('/api/user', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, phone, name }),
-    });
+    // Create new user -> https://appwrite.io/docs/references/1.5.x/server-nodejs/users#create
+    const newuser = await users.create(
+      ID.unique(),
+      user.email,
+      user.phone,
+      undefined,
+      user.name
+    );
 
-    if (response.ok) {
-      return await response.json();
-    } else if (response.status === 409) {
-      return { message: 'This user already exist!' }
-    } else {
-      console.error('Failed to create user:', await response.json());
+    return parseStringify(newuser);
+  } catch (error: any) {
+    // Check existing user
+    if (error && error?.code === 409) {
+      const existingUser = await users.list([
+        Query.equal("email", [user.email]),
+      ]);
+
+      return existingUser.users[0];
     }
-  } catch (error) {
-    console.error('An error occurred while creating a new user:', error);
+    console.error("An error occurred while creating a new user:", error);
   }
 };
 
