@@ -1,7 +1,7 @@
 'use server';
 
 import { databases } from "@/lib/appwrite.config";
-import { ID } from "node-appwrite";
+import { ID, Query } from "node-appwrite";
 import { parseStringify } from "../utils";
 
 export const createAppointment = async (appointment: CreateAppointmentParams) => {
@@ -11,6 +11,19 @@ export const createAppointment = async (appointment: CreateAppointmentParams) =>
 
         return parseStringify(newAppointment);
     } catch (error) {
-        console.log(error);
+        console.log('An error occurred while creating a new appointment:', error);
+    }
+}
+
+export const getAppointment = async (appointmentId: string) => {
+    try {
+        const appointment = await databases.getDocument(
+            process.env.APPWRITE_DATABASE_ID as string,
+            process.env.APPOINTMENT_COLLECTION_ID as string,
+            appointmentId
+        )
+        return parseStringify(appointment)
+    } catch (error) {
+        console.error('An error occurred while getting appointment information:', error);
     }
 }
