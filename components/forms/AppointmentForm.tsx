@@ -5,7 +5,7 @@ import { Form } from '@/components/ui/form';
 import { SelectItem } from '@/components/ui/select';
 import { Doctors } from '@/constants';
 import { createUser } from '@/lib/actions/patient.actions';
-import { UserFormValidation } from '@/lib/validation';
+import { getAppointmentSchema, UserFormValidation } from '@/lib/validation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -14,6 +14,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import CustomFormField from './CustomFormField';
 import { FormFieldType } from './PatientForm';
+import { createAppointment } from '@/lib/actions/appointment.actions';
 
 export const AppointmentForm = ({
   userId,
@@ -27,29 +28,67 @@ export const AppointmentForm = ({
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
-  const form = useForm<z.infer<typeof UserFormValidation>>({
-    resolver: zodResolver(UserFormValidation),
+  const AppointmentFormValidation = getAppointmentSchema(type);
+
+  let buttonLabel;
+  let status: Status;
+
+  switch (type) {
+    case 'cancel':
+      buttonLabel = 'Cancel appointment';
+      status = 'cancelled';
+      break;
+    case 'create':
+      buttonLabel = 'Create appointment';
+      status = 'pending'
+      break;
+    case 'schedule':
+      buttonLabel = 'Schedule appointment';
+      status = 'scheduled';
+      break;
+    default:
+      status = 'pending';
+      break;
+  }
+
+  const form = useForm<z.infer<typeof AppointmentFormValidation>>({
+    resolver: zodResolver(AppointmentFormValidation),
     defaultValues: {
-      name: '',
-      email: '',
-      phone: '',
+      primaryPhysician: '',
+      schedule: new Date(Date.now()),
+      reason: '',
+      note: '',
+      cancellationReason: '',
     },
   });
 
   const onSubmit = async ({
-    name,
-    email,
-    phone,
-  }: z.infer<typeof UserFormValidation>) => {
+    primaryPhysician,
+    schedule,
+    reason,
+    note,
+    cancellationReason,
+  }: z.infer<typeof AppointmentFormValidation>) => {
     setIsLoading(true);
 
     try {
-      const userData = { name, email, phone };
+      if (type === 'create' && patientId) {
+        const appointmentData = {
+          userId,
+          patient: patientId,
+          primaryPhysician,
+          schedule: new Date(schedule),
+          reason: reason || '',
+          note,
+          status,
+        };
 
-      const newUser = await createUser(userData);
+        const appointment = await createAppointment(appointmentData);
 
-      if (newUser) {
-        router.push(`/patients/${newUser.$id}/register`);
+        if(appointment){
+          form.reset();
+          router.push(`/patients/${userId}/new-appointment/success?appointmentId=${appointment.$id}`)
+        }
       }
     } catch (error) {
       console.log(error);
@@ -57,22 +96,6 @@ export const AppointmentForm = ({
 
     setIsLoading(false);
   };
-
-  let buttonLabel;
-
-  switch (type) {
-    case 'cancel':
-      buttonLabel = 'Cancel appointment';
-      break;
-    case 'create':
-      buttonLabel = 'Create appointment';
-      break;
-    case 'schedule':
-      buttonLabel = 'Schedule appointment';
-      break;
-    default:
-      break;
-  }
 
   return (
     <Form {...form}>
@@ -128,7 +151,7 @@ export const AppointmentForm = ({
               <CustomFormField
                 fieldType={FormFieldType.TEXTAREA}
                 control={form.control}
-                name='notes'
+                name='note'
                 label='Notes'
                 placeholder='Enter notes'
               />
