@@ -36,7 +36,7 @@ export const getRecentAppointmentList = async () => {
             process.env.APPOINTMENT_COLLECTION_ID as string,
             [Query.orderDesc("$createdAt")]
         );
-
+        
         const initialCounts = {
             scheduledCount: 0,
             pendingCount: 0,
