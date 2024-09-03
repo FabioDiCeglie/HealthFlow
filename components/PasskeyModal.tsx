@@ -92,8 +92,8 @@ const PasskeyModal = () => {
             onChange={(value) => setPasskey({ ...passkey, pass: value })}
           >
             <InputOTPGroup className='shad-otp'>
-              {[0, 1, 2, 3, 4, 5].map((e) => (
-                <InputOTPSlot className='shad-otp-slot' index={e} />
+              {[0, 1, 2, 3, 4, 5].map((e, i) => (
+                <InputOTPSlot className='shad-otp-slot' index={e} key={i} />
               ))}
             </InputOTPGroup>
           </InputOTP>
