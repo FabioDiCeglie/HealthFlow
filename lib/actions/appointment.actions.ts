@@ -3,6 +3,7 @@
 import { databases } from "@/lib/appwrite.config";
 import { ID, Query } from "node-appwrite";
 import { parseStringify } from "../utils";
+import { Appointment } from "@/types/appwrite.types";
 
 export const createAppointment = async (appointment: CreateAppointmentParams) => {
     try {
@@ -27,3 +28,50 @@ export const getAppointment = async (appointmentId: string) => {
         console.error('An error occurred while getting appointment information:', error);
     }
 }
+
+export const getRecentAppointmentList = async () => {
+    try {
+        const appointments = await databases.listDocuments(
+            process.env.APPWRITE_DATABASE_ID as string,
+            process.env.APPOINTMENT_COLLECTION_ID as string,
+            [Query.orderDesc("$createdAt")]
+        );
+
+        const initialCounts = {
+            scheduledCount: 0,
+            pendingCount: 0,
+            cancelledCount: 0,
+        };
+
+        const counts = (appointments.documents as Appointment[]).reduce(
+            (acc, appointment) => {
+                switch (appointment.status) {
+                    case "scheduled":
+                        acc.scheduledCount++;
+                        break;
+                    case "pending":
+                        acc.pendingCount++;
+                        break;
+                    case "cancelled":
+                        acc.cancelledCount++;
+                        break;
+                }
+                return acc;
+            },
+            initialCounts
+        );
+
+        const data = {
+            totalCount: appointments.total,
+            ...counts,
+            documents: appointments.documents,
+        };
+
+        return parseStringify(data);
+    } catch (error) {
+        console.error(
+            "An error occurred while retrieving the recent appointments:",
+            error
+        );
+    }
+};
