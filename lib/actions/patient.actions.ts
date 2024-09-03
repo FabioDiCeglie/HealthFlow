@@ -43,6 +43,7 @@ export const getUser = async (userId: string) => {
 
 export const registerPatient = async ({ identificationDocument, ...patient }: RegisterUserParams) => {
   try {
+    // Upload file ->  // https://appwrite.io/docs/references/cloud/client-web/storage#createFile
     let file;
 
     if (identificationDocument) {
@@ -50,6 +51,7 @@ export const registerPatient = async ({ identificationDocument, ...patient }: Re
       file = await storage.createFile(process.env.NEXT_PUBLIC_BUCKET_ID as string, ID.unique(), inputFile)
     }
 
+    // Create new patient document -> https://appwrite.io/docs/references/cloud/server-nodejs/databases#createDocument
     const newPatient = await databases.createDocument(process.env.APPWRITE_DATABASE_ID as string, process.env.PATIENT_COLLECTION_ID as string, ID.unique(), {
       identificationDocumentId: file?.$id || null,
       identificationDocumentUrl: `${process.env.APPWRITE_ENDPOINT}/storage/buckets/${process.env.NEXT_PUBLIC_BUCKET_ID}/files/${file?.$id}/view?project=${process.env.APPWRITE_PROJECT_ID}`,
@@ -59,5 +61,20 @@ export const registerPatient = async ({ identificationDocument, ...patient }: Re
     return parseStringify(newPatient);
   } catch (error) {
     console.log(error);
+  }
+}
+
+export const getPatient = async (userId: string) => {
+  try {
+    const patients = await databases.listDocuments(
+      process.env.APPWRITE_DATABASE_ID as string,
+      process.env.PATIENT_COLLECTION_ID as string,
+      [
+        Query.equal('userId', userId)
+      ]
+    )
+    return parseStringify(patients.documents[0])
+  } catch (error) {
+    console.error('An error occurred while getting user information:', error);
   }
 }

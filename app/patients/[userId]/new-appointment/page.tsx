@@ -1,4 +1,5 @@
 import AppointmentForm from '@/components/forms/AppointmentForm';
+import { getPatient } from '@/lib/actions/patient.actions';
 import Image from 'next/image';
 
 const NewAppointment = async ({ params: { userId } }: SearchParamProps) => {
@@ -15,8 +16,13 @@ const NewAppointment = async ({ params: { userId } }: SearchParamProps) => {
             className='mb-12 h-10 w-fit'
           />
 
-          <AppointmentForm type='create' userId={userId} />
-          <p className='justify-items-end text-dark-600 xl:text-left'>
+          <AppointmentForm
+            type='create'
+            userId={userId}
+            patientId={patient.$id}
+          />
+          
+          <p className='copyright py-12'>
             © 2024 HealthFlow
           </p>
         </div>
