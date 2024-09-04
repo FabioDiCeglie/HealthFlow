@@ -1,21 +1,12 @@
 'use client';
 
-import { ColumnDef } from '@tanstack/react-table';
-import { Button } from '@/components/ui/button';
-import Image from 'next/image';
-import { MoreHorizontal } from 'lucide-react';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Appointment } from '@/types/appwrite.types';
-import { StatusBadge } from '../StatusBadge';
-import { formatDateTime } from '@/lib/utils';
 import { Doctors } from '@/constants';
+import { formatDateTime } from '@/lib/utils';
+import { Appointment } from '@/types/appwrite.types';
+import { ColumnDef } from '@tanstack/react-table';
+import Image from 'next/image';
+import AppointmentModal from '../AppointmentModal';
+import { StatusBadge } from '../StatusBadge';
 
 export const columns: ColumnDef<Appointment>[] = [
   {
@@ -75,7 +66,12 @@ export const columns: ColumnDef<Appointment>[] = [
     id: 'actions',
     header: () => <div className='pl-4'>Actions</div>,
     cell: ({ row }) => {
-      return <div className='flex gap-1'>AppointmentModal</div>;
+      return (
+        <div className='flex gap-1'>
+          <AppointmentModal type='schedule' />
+          <AppointmentModal type='cancel' />
+        </div>
+      );
     },
   },
 ];
