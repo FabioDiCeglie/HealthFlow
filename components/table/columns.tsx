@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Appointment } from '@/types/appwrite.types';
-import StatusBadge from '../StatusBadge';
+import { StatusBadge } from '../StatusBadge';
 
 export const columns: ColumnDef<Appointment>[] = [
   {
@@ -27,11 +27,11 @@ export const columns: ColumnDef<Appointment>[] = [
   {
     header: 'Status',
     accessorKey: 'status',
-    cell: ({ row }) => {
+    cell: ({ row }) => (
         <div className='min-w-[115px]'>
-            <StatusBadge />
+            <StatusBadge status={row.original.status} />
         </div>
-    }
+    )
   },
   {
     accessorKey: 'email',
