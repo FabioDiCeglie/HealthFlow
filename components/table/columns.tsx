@@ -65,11 +65,25 @@ export const columns: ColumnDef<Appointment>[] = [
   {
     id: 'actions',
     header: () => <div className='pl-4'>Actions</div>,
-    cell: ({ row }) => {
+    cell: ({ row: { original: data } }) => {
       return (
         <div className='flex gap-1'>
-          <AppointmentModal type='schedule' />
-          <AppointmentModal type='cancel' />
+          <AppointmentModal
+            type='schedule'
+            patientId={data.patient.$id}
+            userId={data.userId}
+            appointment={data}
+            title='Schedule Appointment'
+            description='Please confirm the following details to schedule'
+          />
+          <AppointmentModal
+            type='cancel'
+            patientId={data.patient.$id}
+            userId={data.userId}
+            appointment={data}
+            title='Cancel Appointment'
+            description='Are you sure you want to cancel this appointment?'
+          />
         </div>
       );
     },

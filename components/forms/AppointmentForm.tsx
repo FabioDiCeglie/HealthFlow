@@ -4,8 +4,12 @@ import SubmitButton from '@/components/SubmitButton';
 import { Form } from '@/components/ui/form';
 import { SelectItem } from '@/components/ui/select';
 import { Doctors } from '@/constants';
-import { createUser } from '@/lib/actions/patient.actions';
-import { getAppointmentSchema, UserFormValidation } from '@/lib/validation';
+import {
+  createAppointment,
+  updateAppointment,
+} from '@/lib/actions/appointment.actions';
+import { getAppointmentSchema } from '@/lib/validation';
+import { Appointment } from '@/types/appwrite.types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -14,16 +18,19 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import CustomFormField from './CustomFormField';
 import { FormFieldType } from './PatientForm';
-import { createAppointment } from '@/lib/actions/appointment.actions';
 
 export const AppointmentForm = ({
   userId,
   patientId,
   type,
+  appointment,
+  setOpen,
 }: {
   userId: string;
   patientId: string;
   type: 'create' | 'cancel' | 'schedule';
+  appointment?: Appointment;
+  setOpen?: (e: boolean) => void;
 }) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -40,7 +47,7 @@ export const AppointmentForm = ({
       break;
     case 'create':
       buttonLabel = 'Create appointment';
-      status = 'pending'
+      status = 'pending';
       break;
     case 'schedule':
       buttonLabel = 'Schedule appointment';
@@ -54,11 +61,13 @@ export const AppointmentForm = ({
   const form = useForm<z.infer<typeof AppointmentFormValidation>>({
     resolver: zodResolver(AppointmentFormValidation),
     defaultValues: {
-      primaryPhysician: '',
-      schedule: new Date(Date.now()),
-      reason: '',
-      note: '',
-      cancellationReason: '',
+      primaryPhysician: appointment ? appointment.primaryPhysician : '',
+      schedule: appointment
+        ? new Date(appointment.schedule)
+        : new Date(Date.now()),
+      reason: appointment ? appointment.reason : '',
+      note: appointment ? appointment.note : '',
+      cancellationReason: appointment && appointment.cancellationReason ? appointment.cancellationReason : '',
     },
   });
 
@@ -85,9 +94,32 @@ export const AppointmentForm = ({
 
         const appointment = await createAppointment(appointmentData);
 
-        if(appointment){
+        if (appointment) {
           form.reset();
-          router.push(`/patients/${userId}/new-appointment/success?appointmentId=${appointment.$id}`)
+          router.push(
+            `/patients/${userId}/new-appointment/success?appointmentId=${appointment.$id}`
+          );
+        }
+      } else {
+        const appointmentToUpdate = {
+          userId,
+          appointmentId: appointment?.$id!,
+          appointment: {
+            primaryPhysician,
+            schedule: new Date(schedule),
+            status,
+            reason,
+            note,
+            cancellationReason,
+          },
+          type,
+        };
+
+        const updatedAppointment = await updateAppointment(appointmentToUpdate);
+
+        if (updatedAppointment) {
+          setOpen && setOpen(false);
+          form.reset();
         }
       }
     } catch (error) {
@@ -100,12 +132,14 @@ export const AppointmentForm = ({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6 flex-1'>
-        <section className='mb-12 space-y-4'>
-          <h1 className='header'>New Appointment 👨‍⚕️</h1>
-          <p className='text-dark-700'>
-            Request a new appointment in 10 seconds
-          </p>
-        </section>
+        {type === 'create' && (
+          <section className='mb-12 space-y-4'>
+            <h1 className='header'>New Appointment 👨‍⚕️</h1>
+            <p className='text-dark-700'>
+              Request a new appointment in 10 seconds
+            </p>
+          </section>
+        )}
 
         {type !== 'cancel' ? (
           <>
