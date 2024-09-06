@@ -44,7 +44,7 @@ const PasskeyModal = () => {
         setOpen(true);
       }
     }
-  }, [encryptedKey]);
+  }, [router, path, encryptedKey]);
 
   const validatePassKey = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
