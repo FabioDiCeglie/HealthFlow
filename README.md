@@ -1,36 +1,78 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🏥 Patient Appointment System
 
-## Getting Started
+This project is a patient appointment system built using **Next.js**, **Appwrite**, and **Twilio**. It enables patients to register, book appointments with doctors, and provides an admin dashboard where admins can manage appointments (schedule or cancel). SMS notifications are sent to users when appointments are scheduled or canceled using **Twilio API**.
 
-First, run the development server:
+## Table of Contents
+1. [Features](#features)
+2. [Technologies Used](#technologies-used)
+3. [Architecture Overview](#architecture-overview)
+4. [Setup & Installation](#setup--installation)
+5. [Environment Variables](#environment-variables)
+6. [SMS Notifications](#sms-notifications)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Patient Registration**: Users can register as patients and manage their profiles.
+- **Book Appointments**: Patients can schedule appointments with different doctors.
+- **Admin Dashboard**: Admins have access to a dashboard to view, schedule, or cancel appointments.
+- **SMS Notifications**: Appointment-related SMS notifications are sent to patients using Twilio API.
+  
+## Technologies Used
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Frontend**: Next.js (React Framework)
+- **Backend**: Next.js API Routes with Server Actions
+- **Database**: Appwrite (Self-hosted backend server for managing authentication, databases, etc.)
+- **SMS API**: Twilio API for sending SMS notifications
+- **Authentication**: Simple admin authentication is implemented via an environment variable-based check for admin access
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Architecture Overview
 
-## Learn More
+### Patient Flow
+1. **Registration**: Patients register using the **Next.js** frontend, with backend logic handled via **Appwrite**.
+2. **Login**: Users log in through Appwrite's authentication.
+3. **Appointment Booking**: After login, patients can view available doctors and book appointments. Booked appointments are stored in the Appwrite database.
+4. **Appointment Notifications**: Upon scheduling or cancellation, SMS notifications are sent to the patient via **Twilio API**.
 
-To learn more about Next.js, take a look at the following resources:
+### Admin Flow
+1. **Dashboard Access**: Admins access the dashboard by providing a predefined OTP via an environment variable check.
+2. **Appointment Management**: Admins can view, schedule, or cancel appointments. These actions are stored in the Appwrite database, and SMS notifications are triggered.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Setup & Installation
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+### Prerequisites
+- Node.js (v18+)
+- Appwrite instance setup
+- Twilio Account (for SMS notifications)
 
-## Deploy on Vercel
+### Installation Steps
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/patient-appointment-system.git
+   cd HealthFlow
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2. Install dependencies using Yarn:
+   ```bash
+   yarn install
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+3. Configure the environment variables (see next section).
+
+4. Start the development server:
+   ```bash
+   yarn dev
+   ```
+
+5. Ensure Appwrite is running (self-hosted or on Appwrite Cloud) and that you've created a database and set up Twilio.
+
+## Environment Variables
+
+Create a `.env.local` file in the root of the project and configure the following environment variables: refer to the `.env.local.example` file for proper setup.
+
+## SMS Notifications
+
+**Twilio API** is used to send SMS notifications to patients in the following scenarios:
+1. When an appointment is scheduled.
+2. When an appointment is canceled.
+
+Notifications are triggered automatically after the admin performs an action on the dashboard.
