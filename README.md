@@ -47,7 +47,7 @@ This project is a patient appointment system built using **Next.js**, **Appwrite
 ### Installation Steps
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/patient-appointment-system.git
+   git clone https://github.com/FabioDiCeglie/HealthFlow.git
    cd HealthFlow
    ```
 
